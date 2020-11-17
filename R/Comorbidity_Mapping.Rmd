@@ -34,17 +34,10 @@ library(tableone)
 
 Replace path of simulated_data with that of your site's Phase2.1 PatientObservations csv file.
 ```{r}
-#my_path = "simulated_data/data.csv"
-my_path = "nwu_data/PatientObservations.csv"
+#my_path = "C:/Users/User/Box Sync/Projects/4CE_Comorbidity_Mapping/simulated_data/data.csv"
+my_path = "C:/Users/User/Box Sync/Projects/4CE_Comorbidity_Mapping/nwu_data/PatientObservations.csv"
 
 data <- read.csv(my_path)
-```
-
-## Data pre-processing
-
-First, select only the ICD concepts
-```{r}
-data <- data %>% filter(concept_type == "DIAG-ICD10" | concept_type == "DIAG-ICD9")
 ```
 
 # Charlson Mapping
@@ -55,6 +48,8 @@ If a site has ICD9 or ICD 10 Codes, the mapping must be performed separately and
 ```{r}
 map_charlson_codes <- function(data) { 
 
+  data <- data %>% filter(concept_type == "DIAG-ICD10" | concept_type == "DIAG-ICD9")
+  
   # filter for diagnoses prior to admission
   data <- data %>% filter(days_since_admission < 0)
   
@@ -204,28 +199,40 @@ map_charlson_codes <- function(data) {
   icd9_map <- inner_join(icd9, icd9_code_map, by = "concept_code")
     
   # explain_codes will add additional information regarding the code name 
+  # add if statements in order to handle sites that only have ICD 9 or 10 codes but not both
+  
+  if (nrow(icd10_map) > 0) {
+    
   icd10_mapped_table <- explain_table(icd10_map$concept_code)
   colnames(icd10_mapped_table)[1] <- "concept_code"
   icd10_mapped_table <- icd10_mapped_table %>% distinct()
-    
-  icd9_mapped_table <- explain_table(icd9_map$concept_code)
-  colnames(icd9_mapped_table)[1] <- "concept_code"
-  icd9_mapped_table <- icd9_mapped_table %>% distinct()
   
   icd10_mapped_table <- left_join(icd10_map, icd10_mapped_table, by = "concept_code")
-  icd9_mapped_table <- left_join(icd9_map, icd9_mapped_table, by = "concept_code")
-
+  
   # keep columns of interest 
   icd10_mapped_table <- icd10_mapped_table %>%
     select(patient_num, concept_code, Comorbidity, long_desc) %>% 
     distinct()
+  }
+   
+  if (nrow(icd9_map) > 0) {
   
+  icd9_mapped_table <- explain_table(icd9_map$concept_code)
+  colnames(icd9_mapped_table)[1] <- "concept_code"
+  icd9_mapped_table <- icd9_mapped_table %>% distinct()
+  
+  icd9_mapped_table <- left_join(icd9_map, icd9_mapped_table, by = "concept_code")
+  
+  # keep columns of interest 
   icd9_mapped_table <- icd9_mapped_table %>%
     select(patient_num, concept_code, Comorbidity, long_desc) %>% 
     distinct()
+  } 
+
   
-  # Bind both ICD 9 and 10 code tables together
-  mapped_codes_table <- rbind(icd10_mapped_table, icd9_mapped_table)
+  # Bind both ICD 9 and 10 code tables togethe
+  mapped_codes_table <- rbind(try(icd10_mapped_table, icd9_mapped_table), silent = TRUE)
+
   
   # calculate how many patients had each unique Comorbidity/concept_code
   mapped_codes_table <- mapped_codes_table %>%
@@ -245,11 +252,13 @@ map_charlson_codes <- function(data) {
 ```
 
 ```{r}
-comorb_list_names <- map_charlson_codes(data)[[1]]
-icd_map <- map_charlson_codes(data)[[2]]
-index_scores <- map_charlson_codes(data)[[3]]
-table1 <- map_charlson_codes(data)[[4]]
-mapped_codes_table <- map_charlson_codes(data)[[5]]
+comorb <- map_charlson_codes(data)
+
+comorb_list_names <- comorb[[1]]
+icd_map <- comorb[[2]]
+index_scores <- comorb[[3]]
+table1 <- comorb[[4]]
+mapped_codes_table <- comorb[[5]]
 ```
 
 ## Comorbidity Abbreviation Table
