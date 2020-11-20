@@ -9,8 +9,14 @@ The *icd* functions provide quick mapping to ICD 9 & 10 codes which have been va
     |── R
 
         ├── Comorbidity_Mapping.Rmd <- script to map comorbidities to PatientObservations.csv file
+        
+        ├── Comorbidity_Mapping_Functions.R <- same script as the Rmd file of the same name, however, this R file can be used by other                                                      scripts to source in the comorbidity mapping function
+        
+        ├── Neuro_Comorbidities.Rmd <- analysis examining comorbidities in neurologic patients
     
         ├── simulated_data.R <- script to randomly generate a dataset of patients and ICD codes in the same format as the 4CE's Phase2.1 PatientObservations.csv 
+    
+    ├── neuro        <- list of icd codes to support the neuro subgroup analysis 
     
     ├── simulated_data        <- simulated dataset derived from R/simulated_data.R
 
