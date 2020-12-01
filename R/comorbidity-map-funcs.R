@@ -129,7 +129,7 @@ map_charlson_codes <- function(data) {
   ## Identify the specific codes that mapped
 
   # unlist the charlson mapping lists
-  icd10_map <-
+  icd10_code_map <-
     map_df(icd10_map_charlson3, ~ as.data.frame(.x), .id = "name") %>%
     `colnames<-`(c("Comorbidity", "concept_code")) %>%
     filter(!concept_code %in% comorb_list_names$Comorbidity) %>%
@@ -138,7 +138,7 @@ map_charlson_codes <- function(data) {
     # this will return all comorbidities that mapped to our patient data
     inner_join(icd10, by = "concept_code")
 
-  icd9_map <-
+  icd9_code_map <-
     map_df(icd9_map_charlson3, ~ as.data.frame(.x), .id = "name") %>%
     `colnames<-`(c("Comorbidity", "concept_code")) %>%
     filter(!concept_code %in% comorb_list_names$Comorbidity) %>%
@@ -148,18 +148,18 @@ map_charlson_codes <- function(data) {
   # explain_codes will add additional information regarding the code name
   # add if statements in order to handle sites that only have ICD 9 or 10 codes but not both
 
-  if (nrow(icd10_map) > 0) {
-    icd10_mapped_table <- explain_table(icd10_map$concept_code) %>%
+  if (nrow(icd10_code_map) > 0) {
+    icd10_mapped_table <- explain_table(icd10_code_map$concept_code) %>%
       distinct() %>%
-      left_join(icd10_map, ., by = c("concept_code" = "code")) %>%
+      left_join(icd10_code_map, ., by = c("concept_code" = "code")) %>%
       select(patient_num, concept_code, Comorbidity, long_desc) %>%
       distinct()
   }
 
-  if (nrow(icd9_map) > 0) {
-    icd9_mapped_table <- explain_table(icd9_map$concept_code) %>%
+  if (nrow(icd9_code_map) > 0) {
+    icd9_mapped_table <- explain_table(icd9_code_map$concept_code) %>%
       distinct() %>%
-      left_join(icd9_map, ., by = c("concept_code" = "code")) %>%
+      left_join(icd9_code_map, ., by = c("concept_code" = "code")) %>%
       select(patient_num, concept_code, Comorbidity, long_desc) %>%
       distinct()
   }
