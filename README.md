@@ -10,7 +10,8 @@ The *icd* functions provide quick mapping to ICD 9 & 10 codes which have been va
 
         ├── Comorbidity_Mapping.Rmd <- script to map comorbidities to PatientObservations.csv file
         
-        ├── Comorbidity_Mapping_Functions.R <- same script as the Rmd file of the same name, however, this R file can be used by other                                                      scripts to source in the comorbidity mapping function
+        ├── Comorbidity_Mapping_Functions.R <- same script as the Rmd file of the same name, however, this R file can be used by other
+        scripts to source in the comorbidity mapping function
         
         ├── Neuro_Comorbidities.Rmd <- analysis examining comorbidities in neurologic patients
     
