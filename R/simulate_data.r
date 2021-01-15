@@ -19,13 +19,13 @@ pt_dx10_list = list()
 # for each pseudo-patient, randomly generate a number (ran)
 # this random number will be used to randomly select that many icd codes
 for (i in pts10) {
-  
+
   ran <- sample(1:10, 1)
   dx <- icd10dx[sample(nrow(icd10dx), size = ran, replace = FALSE), ]
   dx$patient_num <- i
   dx$concept_type <- "DIAG-ICD10"
   dx <- dx %>% select(patient_num, concept_type, code)
-  
+
   pt_dx10_list[[i]] <- dx
 }
 
@@ -34,14 +34,14 @@ pt_dx10 = do.call(rbind, pt_dx10_list)
 
 pt_dx9_list = list()
 for (i in pts9) {
-  
+
   ran <- sample(1:10, 1)
   dx <- icd9dx[sample(nrow(icd9dx), size = ran, replace = FALSE), ]
   dx$patient_num <- i
   dx$concept_type <- "DIAG-ICD9"
 
   dx <- dx %>% select(patient_num, concept_type, code)
-  
+
   pt_dx9_list[[i]] <- dx
 }
 
@@ -57,12 +57,12 @@ simulated_data$concept_code <- substr(simulated_data$code, 1, 3)
 
 # for each row, generate random days_since_admission
 simulated_data <- simulated_data %>%
-  mutate(days_since_admission = sample(-10:10, n(), replace = TRUE)) %>%
-  mutate(siteid = "test_site") %>% 
+  mutate(days_since_admission = sample(-365:100, n(), replace = TRUE)) %>%
+  mutate(siteid = "test_site") %>%
   mutate(value = 999) %>%
-  select(siteid, patient_num, days_since_admission, concept_type, 
+  select(siteid, patient_num, days_since_admission, concept_type,
          full_code, concept_code, value) %>%
   arrange(patient_num, days_since_admission)
 
 # save simulated data
-write.csv(simulated_data, file = "simulated_data/data.csv", row.names = FALSE)
+write.csv(simulated_data, file = "data/simulated_data.csv", row.names = FALSE)
