@@ -232,21 +232,6 @@ get_table1 <- function(
     right_join(comorbidities, ., by = "Abbreviation")
 }
 
-# df =scores_unique %>% filter(neuro_post == 'None')
-list_table1 <- function(x, df, num_pats, comorb_names, ...){
-  get_table1(
-    df %>% filter(neuro_post == x),
-    num_pats,
-    comorbidities = comorb_names,
-    pat_col = x, ...)
-}
-
-process_tables <- function(index_scores, ...) {
-  get_table1(index_scores %>% filter(patient_num %in% neuro_pt_post), ...) %>%
-    rename('n_neuro_pats' = n_patients) %>%
-    left_join(get_table1(index_scores, ...),
-              by = c("Comorbidity", "Abbreviation"))
-}
 
 get_charlson_names <- function(){
   data.frame(
