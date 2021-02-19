@@ -7,7 +7,7 @@ Our code adapts the [icd package](https://github.com/jackwasey/icd) by [Jack Was
 
 Functions found in this repo have been developed by [Trang Le](https://github.com/trang1618) and [Meghan Hutch](https://github.com/meghutch) and incoporated in the the 4CE's [COVID-19 & Neurological Disease Analysis](https://github.com/trang1618/neuro-penn). 
 
-Please see the Comorbidity_Mapping_Demo.Rmd to learn how to use the```'map_char_elix_codes'`` function.
+Please see the Comorbidity_Mapping_Demo.Rmd to learn how to use the ```'map_char_elix_codes'```  function.
 
 ## Respository Directory
 
